@@ -13,12 +13,11 @@ if hasattr(os, 'sync'):
 else:
     import ctypes
     libc = ctypes.CDLL("libc.so.6")
-
     def sync():
         libc.sync()
 
 # linux cognizes all devices as file
-def transmit_bits(tmpfile, bits, T0, readsize):
+def transmit_bits(tmpfile, bits, T0):
     sync()  # drop cache
     fp = open(tmpfile)
     offset = 0
@@ -27,12 +26,11 @@ def transmit_bits(tmpfile, bits, T0, readsize):
     for b in list(bits):
         # sync()
         if (b == '0'):
-            print("0 sleep " + str(T0))
+            print("sleep " + str(T0))
             time.sleep(T0)
         if (b == '1'):
             sync()
             fp.seek(offset)
-            print("1 read %d bytes" % len(fp.read(readsize)))
             offset += offsetincrement
 
 # encoding method
@@ -78,8 +76,7 @@ def transmit_packet(payload):
                 itob32(zlib.crc32(payload)))
     print(dataONOFF)
     time.sleep(1)
-    transmit_bits('/dev/disk3s6', dataONOFF, 0.01, 4096)
-
+    transmit_bits('/dev/sda4', dataONOFF, 0.5)
 
 def main():
     while True:
