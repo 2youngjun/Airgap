@@ -17,7 +17,7 @@ else:
         libc.sync()
 
 # linux cognizes all devices as file
-def transmit_bits(tmpfile, bits, T0):
+def transmit_bits(tmpfile, bits, T0, readsize):
     sync()  # drop cache
     fp = open(tmpfile)
     offset = 0
@@ -26,7 +26,7 @@ def transmit_bits(tmpfile, bits, T0):
     for b in list(bits):
         # sync()
         if (b == '0'):
-            print("sleep " + str(T0))
+            print("Interval " + str(T0) + " seconds")
             time.sleep(T0)
         if (b == '1'):
             sync()
@@ -74,13 +74,13 @@ def transmit_packet(payload):
                 itob16(payload_size) +
                 atob(payload) +
                 itob32(zlib.crc32(payload)))
-    print(dataONOFF)
-    time.sleep(1)
-    transmit_bits('/dev/sda4', dataONOFF, 0.5)
+    print("\n%s\n"%dataONOFF)
+    time.sleep(10)
+    transmit_bits('/dev/sda4', dataONOFF, 3, 4096)
 
 def main():
     while True:
-        transmit_packet("leeyoungjun")
+        transmit_packet("abcd")
 
 
 if __name__ == "__main__":
