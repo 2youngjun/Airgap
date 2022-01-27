@@ -19,6 +19,7 @@ else:
 # linux cognizes all devices as file
 def transmit_bits(tmpfile, bits, T0, readsize):
     sync()  # drop cache
+    time.sleep(3)
     fp = open(tmpfile)
     offset = 0
     offsetincrement = BLOCK_SIZE
@@ -29,8 +30,9 @@ def transmit_bits(tmpfile, bits, T0, readsize):
             print("Interval " + str(T0) + " seconds")
             time.sleep(T0)
         if (b == '1'):
-            sync()
+            # sync()
             fp.seek(offset)
+            print("1 read %d bytes" % len(fp.read(readsize)))
             offset += offsetincrement
 
 # encoding method
